@@ -1,6 +1,14 @@
 # war3-72bian
 War3-官方对战平台RPG地图-七十二变之斩妖除魔 修改器
 
+## 开发环境
+
+Winform 
+
+.Net Framework 4.8 (也可以改为其他版本)
+
+VisualStudio 2022
+
 ## 使用方法
 
 选择角色后, 点击软件中相应的功能即可, 
