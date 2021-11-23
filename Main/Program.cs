@@ -8,20 +8,17 @@ namespace Main
 {
     internal static class Program
     {
-        /// <summary>
-        /// 应用程序的主入口点。
-        /// </summary>
         [STAThread]
         static void Main()
         {
             try
             {
+                //处理未捕获的异常
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 //处理UI线程异常
-                Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
+                Application.ThreadException += (_, ex) => HandleException((Exception)ex.Exception);
                 //处理非UI线程异常
-                AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-
+                AppDomain.CurrentDomain.UnhandledException += (_, ex) => HandleException((Exception)ex.ExceptionObject);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
@@ -29,59 +26,19 @@ namespace Main
             }
             catch (Exception ex)
             {
-                string str = "";
-                string strDateInfo = "出现应用程序未处理的异常：" + DateTime.Now.ToString() + "\r\n";
-
-                if (ex != null)
-                {
-                    str = string.Format(strDateInfo + "异常类型：{0}\r\n异常消息：{1}\r\n异常信息：{2}\r\n",
-                         ex.GetType().Name, ex.Message, ex.StackTrace);
-                }
-                else
-                {
-                    str = string.Format("应用程序线程错误:{0}", ex);
-                }
-
-                MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                HandleException(ex);
             }
         }
 
-
-        static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        /// <summary>
+        /// 处理异常
+        /// </summary>
+        /// <param name="error"></param>
+        static void HandleException(Exception error)
         {
-            string str = "";
-            string strDateInfo = "出现应用程序未处理的异常：" + DateTime.Now.ToString() + "\r\n";
-            Exception error = e.Exception as Exception;
-            if (error != null)
-            {
-                str = string.Format(strDateInfo + "异常类型：{0}\r\n异常消息：{1}\r\n异常信息：{2}\r\n",
-                error.GetType().Name, error.Message, error.StackTrace);
-            }
-            else
-            {
-                str = string.Format("应用程序线程错误:{0}", e);
-            }
-
-            MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            string strDateInfo = "异常：" + DateTime.Now.ToString() + "\r\n";
+            var str = $"{strDateInfo}Application UnhandledException:{error.Message};\n\r堆栈信息:{error.StackTrace}";
+            MessageBox.Show(str, "异常", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            string str = "";
-            Exception error = e.ExceptionObject as Exception;
-            string strDateInfo = "出现应用程序未处理的异常：" + DateTime.Now.ToString() + "\r\n";
-            if (error != null)
-            {
-                str = string.Format(strDateInfo + "Application UnhandledException:{0};\n\r堆栈信息:{1}", error.Message, error.StackTrace);
-            }
-            else
-            {
-                str = string.Format("Application UnhandledError:{0}", e);
-            }
-
-            MessageBox.Show(str, "系统错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-
     }
 }
