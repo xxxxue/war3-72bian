@@ -54,19 +54,8 @@ namespace Main
         {
             var (process, pid) = GetProcessInfo();
 
-            var address = MemoryUtils.GetModuleBasePath(process, _moduleName);
-
-            var one = (int)address + 0x00BE87A4;
-            var oneVal = MemoryUtils.ReadMemoryValueToInt32(one, pid);
-
-            var two = oneVal + 0x30;
-            var twoVal = MemoryUtils.ReadMemoryValueToInt32(two, pid);
-
-            var three = twoVal + 0x1F0;
-            var threeVal = MemoryUtils.ReadMemoryValueToInt32(three, pid);
-
-            var four = threeVal + 0x8C;
-            return four;
+            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x8C);
+            return addr;
         }
 
         /// <summary>
@@ -77,19 +66,9 @@ namespace Main
         {
             var (process, pid) = GetProcessInfo();
 
-            var address = MemoryUtils.GetModuleBasePath(process, _moduleName);
+            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x94);
 
-            var one = (int)address + 0x00BE87A4;
-            var oneVal = MemoryUtils.ReadMemoryValueToInt32(one, pid);
-
-            var two = oneVal + 0x30;
-            var twoVal = MemoryUtils.ReadMemoryValueToInt32(two, pid);
-
-            var three = twoVal + 0x1F0;
-            var threeVal = MemoryUtils.ReadMemoryValueToInt32(three, pid);
-
-            var four = threeVal + 0x94;
-            return four;
+            return addr;
         }
 
         /// <summary>
@@ -100,19 +79,9 @@ namespace Main
         {
             var (process, pid) = GetProcessInfo();
 
-            var address = MemoryUtils.GetModuleBasePath(process, _moduleName);
+            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0xA8);
 
-            var one = (int)address + 0x00BE87A4;
-            var oneVal = MemoryUtils.ReadMemoryValueToInt32(one, pid);
-
-            var two = oneVal + 0x30;
-            var twoVal = MemoryUtils.ReadMemoryValueToInt32(two, pid);
-
-            var three = twoVal + 0x1F0;
-            var threeVal = MemoryUtils.ReadMemoryValueToInt32(three, pid);
-
-            var four = threeVal + 0xA8;
-            return four;
+            return addr;
         }
 
         /// <summary>
@@ -123,17 +92,9 @@ namespace Main
         {
             var (process, pid) = GetProcessInfo();
 
-            var address = MemoryUtils.GetModuleBasePath(process, _moduleName);
+            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00B59790, 0x1EC, 0x70);
 
-            var one = (int)address + 0x00B59790;
-            var oneVal = MemoryUtils.ReadMemoryValueToInt32(one, pid);
-
-            var two = oneVal + 0x1EC;
-            var twoVal = MemoryUtils.ReadMemoryValueToInt32(two, pid);
-
-            var three = twoVal + 0x70;
-
-            return three;
+            return addr;
         }
 
         /// <summary>

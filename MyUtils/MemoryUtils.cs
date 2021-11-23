@@ -49,8 +49,8 @@ namespace MyUtils
         /// <returns></returns>
         public static Process GetProcessByProcessName(string processName)
         {
-            var processArr= Process.GetProcessesByName(processName);
-            if (processArr.Length>0)
+            var processArr = Process.GetProcessesByName(processName);
+            if (processArr.Length > 0)
             {
                 return processArr[0];
             }
@@ -184,6 +184,41 @@ namespace MyUtils
                 }
             }
             return baseAddress;
+        }
+
+        /// <summary>
+        /// 读取内存的值
+        /// </summary>
+        /// <param name="process">进程对象</param>
+        /// <param name="moduleName">基址模块名</param>
+        /// <param name="offsetArray">多级偏移</param>
+        /// <returns>1.具体地址,2.值</returns>
+        /// <exception cref="Exception">至少需要一个偏移</exception>
+        public static (int, int) ReadMemoryValue(Process process, string moduleName, params int[] offsetArray)
+        {
+            if ((offsetArray?.Length ?? 0) == 0)
+            {
+                throw new Exception("至少需要一个偏移");
+            }
+
+            var pid = process.Id;
+
+            // 模块的地址
+            var address = MemoryUtils.GetModuleBasePath(process, moduleName);
+
+            // 计算一级偏移
+            var addr = (int)address + offsetArray[0];
+            var addrVal = MemoryUtils.ReadMemoryValueToInt32(addr, pid);
+
+            // 计算剩下的多级偏移
+            for (int i = 1; i < offsetArray.Length; i++)
+            {
+                addr = addrVal + offsetArray[i];
+                addrVal = MemoryUtils.ReadMemoryValueToInt32(addr, pid);
+            }
+
+            // 最后一级的具体地址, 内存的值
+            return (addr, addrVal);
         }
 
         #endregion
