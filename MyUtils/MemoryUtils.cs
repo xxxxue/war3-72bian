@@ -221,6 +221,61 @@ namespace MyUtils
             return (addr, addrVal);
         }
 
+        /// <summary>
+        /// 获取内存的地址
+        /// </summary>
+        /// <param name="process"></param>
+        /// <param name="moduleName"></param>
+        /// <param name="offsetArray"></param>
+        /// <returns></returns>
+        public static int GetMemoryAddress(Process process, string moduleName, params int[] offsetArray)
+        {
+            return ReadMemoryValue(process, moduleName, offsetArray).Item1;
+        }
+
+        /// <summary>
+        /// 将 值 转为可以写入的单浮点格式
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static int FloatToWrite(float val)
+        {
+            return Convert.ToInt32(IEEE754Utils.FloatToHex(val), 16);
+        }
+        /// <summary>
+        /// 将单浮点值 转为人类可读的格式
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public static string FloatToShow(long val)
+        {
+            // long 改为 float 会报错
+            return IEEE754Utils.HexToFloat(val.ToString("x8")).ToString();
+        }
+
+        /// <summary>
+        /// 读取单浮点值转为人类可读的格式
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="pid"></param>
+        /// <returns></returns>
+        public static string ReadMemoryFloatToShow(int address, int pid)
+        {
+            return MemoryUtils.FloatToShow(MemoryUtils.ReadMemoryValueToInt64(address, pid));
+        }
+
+        /// <summary>
+        /// 写入单浮点的值
+        /// </summary>
+        /// <param name="address"></param>
+        /// <param name="pid"></param>
+        /// <param name="val"></param>
+        public static void WriteMemoryFloatValue(int address, int pid, float val)
+        {
+            MemoryUtils.WriteMemoryValue(address, pid, MemoryUtils.FloatToWrite(val));
+        }
+
+
         #endregion
     }
 }

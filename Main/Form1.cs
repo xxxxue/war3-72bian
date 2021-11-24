@@ -9,6 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using Main.Helper;
+using Main.Model;
+
 using MyUtils;
 
 namespace Main
@@ -20,81 +23,35 @@ namespace Main
             InitializeComponent();
         }
 
-        /// <summary>
-        /// 进程名
-        /// </summary>
-        static string _processName = "War3";
+        string _moduleName = default;
+        Process _process = default;
+        int _pid = default;
+
+        HeroInfo _heroInfo = default;
+        Dictionary<string, string> _bossPositionDic = default;
 
         /// <summary>
-        /// 模块名
+        /// 初始化游戏
         /// </summary>
-        static string _moduleName = "Game.dll";
-
-        /// <summary>
-        /// 获取 进程信息
-        /// </summary>
-        /// <returns></returns>
-        /// <exception cref="Exception">没有找到进程</exception>
-        (Process, int) GetProcessInfo()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void init_game_button_Click(object sender, EventArgs e)
         {
-            var process = MemoryUtils.GetProcessByProcessName(_processName);
-            if (process == null)
+            (_process, _pid) = InfoHelper.GetProcessInfo();
+
+            _moduleName = InfoHelper._moduleName;
+            _bossPositionDic = InfoHelper._bossPositionDic;
+            _heroInfo = new HeroInfo
             {
-                throw new Exception($"没有找到进程:{_processName},请先启动后,再使用该功能");
-            }
-            var pid = process.Id;
-            return (process, pid);
-        }
+                JinYanAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x8C),
+                LiLiangAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x94),
+                MinJieAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0xA8),
+                YiSuAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00B59790, 0x1EC, 0x70),
+                PositionXAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BC5FF4, 0x78),
+                PositionYAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BC5FF4, 0x7C)
+            };
 
-        /// <summary>
-        /// 获取 经验地址
-        /// </summary>
-        /// <returns></returns>
-        int GetJingYanAddress()
-        {
-            var (process, pid) = GetProcessInfo();
-
-            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x8C);
-            return addr;
-        }
-
-        /// <summary>
-        /// 获取 力量地址
-        /// </summary>
-        /// <returns></returns>
-        int GetLiLiangAddress()
-        {
-            var (process, pid) = GetProcessInfo();
-
-            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x94);
-
-            return addr;
-        }
-
-        /// <summary>
-        /// 获取 敏捷地址
-        /// </summary>
-        /// <returns></returns>
-        int GetMinJieAddress()
-        {
-            var (process, pid) = GetProcessInfo();
-
-            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0xA8);
-
-            return addr;
-        }
-
-        /// <summary>
-        /// 获取  移速地址
-        /// </summary>
-        /// <returns></returns>
-        int GetYiSuAddress()
-        {
-            var (process, pid) = GetProcessInfo();
-
-            var (addr, value) = MemoryUtils.ReadMemoryValue(process, _moduleName, 0x00B59790, 0x1EC, 0x70);
-
-            return addr;
+            init_game_button.Text = "初始化成功";
         }
 
         /// <summary>
@@ -103,13 +60,10 @@ namespace Main
         /// <param name="value"></param>
         void ModifyJingYan(int value)
         {
-            var (process, pid) = GetProcessInfo();
-
-            var address = GetJingYanAddress();
             // 修改经验
-            MemoryUtils.WriteMemoryValue(address, pid, value);
+            MemoryUtils.WriteMemoryValue(_heroInfo.JinYanAddress, _pid, value);
 
-            msg_lable.Text = "当前经验:" + MemoryUtils.ReadMemoryValueToInt32(address, pid);
+            msg_lable.Text = "当前经验:" + MemoryUtils.ReadMemoryValueToInt32(_heroInfo.JinYanAddress, _pid);
         }
 
         /// <summary>
@@ -141,13 +95,9 @@ namespace Main
         /// </summary>
         void li_liang_max_button_Click(object sender, EventArgs e)
         {
-            var (process, pid) = GetProcessInfo();
+            MemoryUtils.WriteMemoryValue(_heroInfo.LiLiangAddress, _pid, 9999999);
 
-            var addr = GetLiLiangAddress();
-
-            MemoryUtils.WriteMemoryValue(addr, pid, 9999999);
-
-            msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(addr, pid).ToString();
+            msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.LiLiangAddress, _pid).ToString();
         }
 
         /// <summary>
@@ -155,13 +105,9 @@ namespace Main
         /// </summary>
         void min_jie_max_button_Click(object sender, EventArgs e)
         {
-            var (process, pid) = GetProcessInfo();
+            MemoryUtils.WriteMemoryValue(_heroInfo.MinJieAddress, _pid, 999999);
 
-            var addr = GetMinJieAddress();
-
-            MemoryUtils.WriteMemoryValue(addr, pid, 999999);
-
-            msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(addr, pid).ToString();
+            msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.MinJieAddress, _pid).ToString();
         }
 
         /// <summary>
@@ -169,20 +115,55 @@ namespace Main
         /// </summary>
         void yi_su_max_button_Click(object sender, EventArgs e)
         {
-            var (process, pid) = GetProcessInfo();
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.YiSuAddress, _pid, 522);
 
-            var addr = GetYiSuAddress();
-
-            //设置移速为522
-            var maxVal = Convert.ToInt32(IEEE754Utils.FloatToHex(522), 16);
-
-            MemoryUtils.WriteMemoryValue(addr, pid, maxVal);
-
-            //获取最新的移速
-            var val = MemoryUtils.ReadMemoryValueToInt64(addr, pid);
             //内存单浮点 类型 转为 人类可读的 十进制
-            msg_lable.Text = IEEE754Utils.HexToFloat(val.ToString("x8")).ToString();
+            msg_lable.Text = MemoryUtils.ReadMemoryFloatToShow(_heroInfo.YiSuAddress, _pid);
         }
 
+        /// <summary>
+        /// 瞬移
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <exception cref="Exception"></exception>
+        private void shun_yi_Click(object sender, EventArgs e)
+        {                       
+            var name = ((Button)sender).Text;           
+
+            var bossPos = _bossPositionDic
+                 .Where(item => item.Key == name)
+                 .Select(item =>
+                 {
+                     var pos = item.Value.Split(',');
+                     if (pos.Length != 2)
+                     {
+                         throw new Exception($"分割{item.Key}坐标信息({item.Value})发生错误...");
+                     }
+                     return new
+                     {
+                         x = float.Parse(pos[0]),
+                         y = float.Parse(pos[1]),
+                     };
+                 }).FirstOrDefault();
+
+            if (bossPos == null)
+            {
+                throw new Exception($"没有与[{name}]匹配的信息..");
+            }
+            SetHeroPosition(bossPos.x, bossPos.y);
+            msg_lable.Text = $"{name} 瞬移成功";
+        }
+
+        /// <summary>
+        ///  设置 角色位置
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        void SetHeroPosition(float x, float y)
+        {
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionXAddress, _pid, x);
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionYAddress, _pid, y);
+        }
     }
 }
