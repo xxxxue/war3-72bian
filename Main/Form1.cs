@@ -87,7 +87,7 @@ namespace Main
         /// </summary>
         void level_max_button_Click(object sender, EventArgs e)
         {
-            ModifyJingYan(9999999);
+            ModifyJingYan(999999);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Main
         /// </summary>
         void min_jie_max_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryValue(_heroInfo.MinJieAddress, _pid, 999999);
+            MemoryUtils.WriteMemoryValue(_heroInfo.MinJieAddress, _pid, 9999);
 
             msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.MinJieAddress, _pid).ToString();
         }
