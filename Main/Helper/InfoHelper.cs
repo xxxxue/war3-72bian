@@ -39,14 +39,6 @@ namespace Main.Helper
         }
 
         /// <summary>
-        /// 初始化信息
-        /// </summary>
-        public static void InitInfo()
-        {
-            var (process, pid) = GetProcessInfo();
-        }
-
-        /// <summary>
         /// 怪物坐标
         /// </summary>
         public static Dictionary<string, string> _bossPositionDic = new Dictionary<string, string>()

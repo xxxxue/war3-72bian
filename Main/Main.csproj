@@ -53,7 +53,6 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper\InfoHelper.cs" />
-    <Compile Include="Model\BossPosition.cs" />
     <Compile Include="Model\HeroInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

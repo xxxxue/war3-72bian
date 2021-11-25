@@ -62,6 +62,7 @@ namespace Main
         {
             // 修改经验
             MemoryUtils.WriteMemoryValue(_heroInfo.JinYanAddress, _pid, value);
+           
 
             msg_lable.Text = "当前经验:" + MemoryUtils.ReadMemoryValueToInt32(_heroInfo.JinYanAddress, _pid);
         }

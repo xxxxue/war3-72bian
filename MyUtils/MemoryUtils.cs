@@ -61,10 +61,10 @@ namespace MyUtils
         /// <summary>
         /// 读取内存
         /// </summary>
-        /// <param name="baseAddress"></param>
+        /// <param name="address"></param>
         /// <param name="pid"></param>
         /// <returns></returns>
-        public static IntPtr ReadMemory(int baseAddress, int pid)
+        public static IntPtr ReadMemory(int address, int pid)
         {
             byte[] buffer = new byte[4];
             //获取缓冲区地址
@@ -72,7 +72,7 @@ namespace MyUtils
             //打开一个已存在的进程对象  0x1F0FFF 最高权限
             IntPtr hProcess = OpenProcess(0x1F0FFF, false, pid);
             //将制定内存中的值读入缓冲区
-            ReadProcessMemory(hProcess, (IntPtr)baseAddress, byteAddress, 4, IntPtr.Zero);
+            ReadProcessMemory(hProcess, (IntPtr)address, byteAddress, 4, IntPtr.Zero);
             //关闭操作
             CloseHandle(hProcess);
             return byteAddress;
@@ -82,68 +82,44 @@ namespace MyUtils
         /// <summary>
         /// 读取内存中的值 int32
         /// </summary>
-        /// <param name="baseAddress"></param>
+        /// <param name="address"></param>
         /// <param name="pid"></param>
         /// <returns></returns>
-        public static int ReadMemoryValueToInt32(int baseAddress, int pid)
+        public static int ReadMemoryValueToInt32(int address, int pid)
         {
-            try
-            {
-                var byteAddress = ReadMemory(baseAddress, pid);
-                //从非托管内存中读取一个 32 位带符号整数。
-                return Marshal.ReadInt32(byteAddress);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return 0;
-            }
+            var byteAddress = ReadMemory(address, pid);
+            //从非托管内存中读取一个 32 位带符号整数。
+            return Marshal.ReadInt32(byteAddress);
         }
 
 
         /// <summary>
         /// 读取内存中的值 int64
         /// </summary>
-        /// <param name="baseAddress"></param>
+        /// <param name="address"></param>
         /// <param name="pid"></param>
         /// <returns></returns>
-        public static long ReadMemoryValueToInt64(int baseAddress, int pid)
+        public static long ReadMemoryValueToInt64(int address, int pid)
         {
-            try
-            {
-                var byteAddress = ReadMemory(baseAddress, pid);
-                //从非托管内存中读取一个 64 位带符号整数。
-                return Marshal.ReadInt64(byteAddress);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return 0;
-            }
+            var byteAddress = ReadMemory(address, pid);
+            //从非托管内存中读取一个 64 位带符号整数。
+            return Marshal.ReadInt64(byteAddress);
         }
 
         /// <summary>
         /// 将值写入指定内存地址中
         /// </summary>
-        /// <param name="baseAddress"></param>
+        /// <param name="address"></param>
         /// <param name="pid"></param>
         /// <param name="value"></param>        
-        public static void WriteMemoryValue(int baseAddress, int pid, int value)
+        public static void WriteMemoryValue(int address, int pid, int value)
         {
-            try
-            {
-                //打开一个已存在的进程对象  0x1F0FFF 最高权限
-                IntPtr hProcess = OpenProcess(0x1F0FFF, false, pid);
-                //从指定内存中写入字节集数据
-                WriteProcessMemory(hProcess, (IntPtr)baseAddress, new int[] { value }, 4, IntPtr.Zero);
-                //关闭操作
-                CloseHandle(hProcess);
-
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+            //打开一个已存在的进程对象  0x1F0FFF 最高权限
+            IntPtr hProcess = OpenProcess(0x1F0FFF, false, pid);
+            //从指定内存中写入字节集数据
+            WriteProcessMemory(hProcess, (IntPtr)address, new int[] { value }, 4, IntPtr.Zero);
+            //关闭操作
+            CloseHandle(hProcess);
         }
 
         /// <summary>
