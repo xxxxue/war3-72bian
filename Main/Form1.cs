@@ -46,6 +46,8 @@ namespace Main
                 JinYanAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x8C),
                 LiLiangAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0x94),
                 MinJieAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE87A4, 0x30, 0x1F0, 0xA8),
+                ZhiLiAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BC5FF4, 0x30, 0x5C, 0x28, 0xF8),
+                FirstSkillTimeAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BE9F24, 0x54, 0x8, 0x4, 0x8, 0x48, 0x69C),
                 YiSuAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00B59790, 0x1EC, 0x70),
                 PositionXAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BC5FF4, 0x78),
                 PositionYAddress = MemoryUtils.GetMemoryAddress(_process, _moduleName, 0x00BC5FF4, 0x7C)
@@ -62,7 +64,6 @@ namespace Main
         {
             // 修改经验
             MemoryUtils.WriteMemoryValue(_heroInfo.JinYanAddress, _pid, value);
-           
 
             msg_lable.Text = "当前经验:" + MemoryUtils.ReadMemoryValueToInt32(_heroInfo.JinYanAddress, _pid);
         }
@@ -88,15 +89,15 @@ namespace Main
         /// </summary>
         void level_max_button_Click(object sender, EventArgs e)
         {
-            ModifyJingYan(999999);
+            ModifyJingYan(3821192);
         }
 
         /// <summary>
-        /// 力量
+        /// 力量 
         /// </summary>
         void li_liang_max_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryValue(_heroInfo.LiLiangAddress, _pid, 9999999);
+            MemoryUtils.WriteMemoryValue(_heroInfo.LiLiangAddress, _pid, 20000);
 
             msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.LiLiangAddress, _pid).ToString();
         }
@@ -106,9 +107,21 @@ namespace Main
         /// </summary>
         void min_jie_max_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryValue(_heroInfo.MinJieAddress, _pid, 9999);
+            MemoryUtils.WriteMemoryValue(_heroInfo.MinJieAddress, _pid, 10000);
 
             msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.MinJieAddress, _pid).ToString();
+        }
+
+        /// <summary>
+        /// 智力
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void zhi_li_max_Click(object sender, EventArgs e)
+        {
+            MemoryUtils.WriteMemoryValue(_heroInfo.ZhiLiAddress, _pid, 20000);
+
+            msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.ZhiLiAddress, _pid).ToString();
         }
 
         /// <summary>
@@ -123,14 +136,27 @@ namespace Main
         }
 
         /// <summary>
+        /// 一技能冷却
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void first_skill_time_button_Click(object sender, EventArgs e)
+        {
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, 1);
+
+            msg_lable.Text = MemoryUtils.ReadMemoryFloatToShow(_heroInfo.FirstSkillTimeAddress, _pid);
+        }
+
+
+        /// <summary>
         /// 瞬移
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// <exception cref="Exception"></exception>
         private void shun_yi_Click(object sender, EventArgs e)
-        {                       
-            var name = ((Button)sender).Text;           
+        {
+            var name = ((Button)sender).Text;
 
             var bossPos = _bossPositionDic
                  .Where(item => item.Key == name)
@@ -166,5 +192,7 @@ namespace Main
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionXAddress, _pid, x);
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionYAddress, _pid, y);
         }
+
+
     }
 }
