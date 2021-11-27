@@ -34,6 +34,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.msg_lable = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.button33 = new System.Windows.Forms.Button();
             this.yi_su_max_button = new System.Windows.Forms.Button();
             this.min_jie_max_button = new System.Windows.Forms.Button();
             this.li_liang_max_button = new System.Windows.Forms.Button();
@@ -73,7 +74,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button20 = new System.Windows.Forms.Button();
-            this.button33 = new System.Windows.Forms.Button();
             this.button34 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
@@ -147,6 +147,16 @@
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "修改属性";
+            // 
+            // button33
+            // 
+            this.button33.Location = new System.Drawing.Point(9, 95);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(63, 31);
+            this.button33.TabIndex = 7;
+            this.button33.Text = "智力";
+            this.button33.UseVisualStyleBackColor = true;
+            this.button33.Click += new System.EventHandler(this.zhi_li_max_Click);
             // 
             // yi_su_max_button
             // 
@@ -266,7 +276,7 @@
             this.button28.Name = "button28";
             this.button28.Size = new System.Drawing.Size(80, 23);
             this.button28.TabIndex = 19;
-            this.button28.Text = "黄毛老象";
+            this.button28.Text = "黄牙老象";
             this.button28.UseVisualStyleBackColor = true;
             this.button28.Click += new System.EventHandler(this.shun_yi_Click);
             // 
@@ -568,16 +578,6 @@
             this.button20.Text = "主城";
             this.button20.UseVisualStyleBackColor = true;
             this.button20.Click += new System.EventHandler(this.shun_yi_Click);
-            // 
-            // button33
-            // 
-            this.button33.Location = new System.Drawing.Point(9, 95);
-            this.button33.Name = "button33";
-            this.button33.Size = new System.Drawing.Size(63, 31);
-            this.button33.TabIndex = 7;
-            this.button33.Text = "智力";
-            this.button33.UseVisualStyleBackColor = true;
-            this.button33.Click += new System.EventHandler(this.zhi_li_max_Click);
             // 
             // button34
             // 
