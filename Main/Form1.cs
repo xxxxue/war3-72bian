@@ -97,7 +97,7 @@ namespace Main
         /// </summary>
         void li_liang_max_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryValue(_heroInfo.LiLiangAddress, _pid, 20000);
+            MemoryUtils.WriteMemoryValue(_heroInfo.LiLiangAddress, _pid, 50000);
 
             msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.LiLiangAddress, _pid).ToString();
         }
@@ -119,7 +119,7 @@ namespace Main
         /// <param name="e"></param>
         private void zhi_li_max_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryValue(_heroInfo.ZhiLiAddress, _pid, 20000);
+            MemoryUtils.WriteMemoryValue(_heroInfo.ZhiLiAddress, _pid, 100000);
 
             msg_lable.Text = MemoryUtils.ReadMemoryValueToInt32(_heroInfo.ZhiLiAddress, _pid).ToString();
         }
@@ -142,7 +142,7 @@ namespace Main
         /// <param name="e"></param>
         private void first_skill_time_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, 1);
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, (float)0.5);
 
             msg_lable.Text = MemoryUtils.ReadMemoryFloatToShow(_heroInfo.FirstSkillTimeAddress, _pid);
         }
