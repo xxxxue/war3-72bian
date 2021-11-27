@@ -1,34 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using Main.Helper;
 using Main.Model;
-
 using MyUtils;
 
 namespace Main
 {
     public partial class Form1 : Form
     {
+        Dictionary<string, string> _bossPositionDic = default;
+
+        HeroInfo _heroInfo = default;
+
+        string _moduleName = default;
+        int _pid = default;
+        Process _process = default;
+
         public Form1()
         {
             InitializeComponent();
         }
-
-        string _moduleName = default;
-        Process _process = default;
-        int _pid = default;
-
-        HeroInfo _heroInfo = default;
-        Dictionary<string, string> _bossPositionDic = default;
 
         /// <summary>
         /// 初始化游戏
@@ -142,7 +136,7 @@ namespace Main
         /// <param name="e"></param>
         private void first_skill_time_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, (float)0.5);
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, (float) 0.5);
 
             msg_lable.Text = MemoryUtils.ReadMemoryFloatToShow(_heroInfo.FirstSkillTimeAddress, _pid);
         }
@@ -156,28 +150,30 @@ namespace Main
         /// <exception cref="Exception"></exception>
         private void shun_yi_Click(object sender, EventArgs e)
         {
-            var name = ((Button)sender).Text;
+            var name = ((Button) sender).Text;
 
             var bossPos = _bossPositionDic
-                 .Where(item => item.Key == name)
-                 .Select(item =>
-                 {
-                     var pos = item.Value.Split(',');
-                     if (pos.Length != 2)
-                     {
-                         throw new Exception($"分割{item.Key}坐标信息({item.Value})发生错误...");
-                     }
-                     return new
-                     {
-                         x = float.Parse(pos[0]),
-                         y = float.Parse(pos[1]),
-                     };
-                 }).FirstOrDefault();
+                .Where(item => item.Key == name)
+                .Select(item =>
+                {
+                    var pos = item.Value.Split(',');
+                    if (pos.Length != 2)
+                    {
+                        throw new Exception($"分割{item.Key}坐标信息({item.Value})发生错误...");
+                    }
+
+                    return new
+                    {
+                        x = float.Parse(pos[0]),
+                        y = float.Parse(pos[1]),
+                    };
+                }).FirstOrDefault();
 
             if (bossPos == null)
             {
                 throw new Exception($"没有与[{name}]匹配的信息..");
             }
+
             SetHeroPosition(bossPos.x, bossPos.y);
             msg_lable.Text = $"{name} 瞬移成功";
         }
@@ -192,7 +188,5 @@ namespace Main
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionXAddress, _pid, x);
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionYAddress, _pid, y);
         }
-
-
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace Main.Model
+﻿namespace Main.Model
 {
     public class HeroInfo
     {
@@ -33,7 +26,7 @@ namespace Main.Model
         /// 第一个技能冷却时间地址
         /// </summary>
         public int FirstSkillTimeAddress { get; set; }
-      
+
         /// <summary>
         /// 移速
         /// </summary>
@@ -48,6 +41,5 @@ namespace Main.Model
         /// Y坐标
         /// </summary>
         public int PositionYAddress { get; set; }
-
     }
 }

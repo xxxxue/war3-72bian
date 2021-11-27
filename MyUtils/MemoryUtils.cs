@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyUtils
 {
@@ -72,7 +68,7 @@ namespace MyUtils
             //打开一个已存在的进程对象  0x1F0FFF 最高权限
             IntPtr hProcess = OpenProcess(0x1F0FFF, false, pid);
             //将制定内存中的值读入缓冲区
-            ReadProcessMemory(hProcess, (IntPtr)address, byteAddress, 4, IntPtr.Zero);
+            ReadProcessMemory(hProcess, (IntPtr) address, byteAddress, 4, IntPtr.Zero);
             //关闭操作
             CloseHandle(hProcess);
             return byteAddress;
@@ -117,7 +113,7 @@ namespace MyUtils
             //打开一个已存在的进程对象  0x1F0FFF 最高权限
             IntPtr hProcess = OpenProcess(0x1F0FFF, false, pid);
             //从指定内存中写入字节集数据
-            WriteProcessMemory(hProcess, (IntPtr)address, new int[] { value }, 4, IntPtr.Zero);
+            WriteProcessMemory(hProcess, (IntPtr) address, new int[] {value}, 4, IntPtr.Zero);
             //关闭操作
             CloseHandle(hProcess);
         }
@@ -137,6 +133,7 @@ namespace MyUtils
                     return item.MainWindowHandle;
                 }
             }
+
             return IntPtr.Zero;
         }
 
@@ -159,6 +156,7 @@ namespace MyUtils
                     break;
                 }
             }
+
             return baseAddress;
         }
 
@@ -180,17 +178,17 @@ namespace MyUtils
             var pid = process.Id;
 
             // 模块的地址
-            var address = MemoryUtils.GetModuleBasePath(process, moduleName);
+            var address = GetModuleBasePath(process, moduleName);
 
             // 计算一级偏移
-            var addr = (int)address + offsetArray[0];
-            var addrVal = MemoryUtils.ReadMemoryValueToInt32(addr, pid);
+            var addr = (int) address + offsetArray[0];
+            var addrVal = ReadMemoryValueToInt32(addr, pid);
 
             // 计算剩下的多级偏移
             for (int i = 1; i < offsetArray.Length; i++)
             {
                 addr = addrVal + offsetArray[i];
-                addrVal = MemoryUtils.ReadMemoryValueToInt32(addr, pid);
+                addrVal = ReadMemoryValueToInt32(addr, pid);
             }
 
             // 最后一级的具体地址, 内存的值
@@ -218,6 +216,7 @@ namespace MyUtils
         {
             return Convert.ToInt32(IEEE754Utils.FloatToHex(val), 16);
         }
+
         /// <summary>
         /// 将单浮点值 转为人类可读的格式
         /// </summary>
@@ -237,7 +236,7 @@ namespace MyUtils
         /// <returns></returns>
         public static string ReadMemoryFloatToShow(int address, int pid)
         {
-            return MemoryUtils.FloatToShow(MemoryUtils.ReadMemoryValueToInt64(address, pid));
+            return FloatToShow(ReadMemoryValueToInt64(address, pid));
         }
 
         /// <summary>
@@ -248,9 +247,8 @@ namespace MyUtils
         /// <param name="val"></param>
         public static void WriteMemoryFloatValue(int address, int pid, float val)
         {
-            MemoryUtils.WriteMemoryValue(address, pid, MemoryUtils.FloatToWrite(val));
+            WriteMemoryValue(address, pid, FloatToWrite(val));
         }
-
 
         #endregion
     }

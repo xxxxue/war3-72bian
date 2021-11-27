@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Main
@@ -16,9 +13,9 @@ namespace Main
                 //处理未捕获的异常
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 //处理UI线程异常
-                Application.ThreadException += (_, ex) => HandleException((Exception)ex.Exception);
+                Application.ThreadException += (_, ex) => HandleException((Exception) ex.Exception);
                 //处理非UI线程异常
-                AppDomain.CurrentDomain.UnhandledException += (_, ex) => HandleException((Exception)ex.ExceptionObject);
+                AppDomain.CurrentDomain.UnhandledException += (_, ex) => HandleException((Exception) ex.ExceptionObject);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
