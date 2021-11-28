@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using Main.Helper;
+using System.Xml.Linq;
+
+using Main.Shared;
 using Main.Model;
+
 using MyUtils;
+using System.Threading.Tasks;
 
 namespace Main
 {
@@ -136,7 +140,7 @@ namespace Main
         /// <param name="e"></param>
         private void first_skill_time_button_Click(object sender, EventArgs e)
         {
-            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, (float) 0.5);
+            MemoryUtils.WriteMemoryFloatValue(_heroInfo.FirstSkillTimeAddress, _pid, (float)0.5);
 
             msg_lable.Text = MemoryUtils.ReadMemoryFloatToShow(_heroInfo.FirstSkillTimeAddress, _pid);
         }
@@ -150,24 +154,31 @@ namespace Main
         /// <exception cref="Exception"></exception>
         private void shun_yi_Click(object sender, EventArgs e)
         {
-            var name = ((Button) sender).Text;
+            var name = ((Button)sender).Text;
+            ShunYi(name);
+            msg_lable.Text = $"{name} 瞬移成功";
 
+        }
+
+
+        void ShunYi(string name)
+        {
             var bossPos = _bossPositionDic
-                .Where(item => item.Key == name)
-                .Select(item =>
-                {
-                    var pos = item.Value.Split(',');
-                    if (pos.Length != 2)
-                    {
-                        throw new Exception($"分割{item.Key}坐标信息({item.Value})发生错误...");
-                    }
+               .Where(item => item.Key == name)
+               .Select(item =>
+               {
+                   var pos = item.Value.Split(',');
+                   if (pos.Length != 2)
+                   {
+                       throw new Exception($"分割{item.Key}坐标信息({item.Value})发生错误...");
+                   }
 
-                    return new
-                    {
-                        x = float.Parse(pos[0]),
-                        y = float.Parse(pos[1]),
-                    };
-                }).FirstOrDefault();
+                   return new
+                   {
+                       x = float.Parse(pos[0]),
+                       y = float.Parse(pos[1]),
+                   };
+               }).FirstOrDefault();
 
             if (bossPos == null)
             {
@@ -175,8 +186,8 @@ namespace Main
             }
 
             SetHeroPosition(bossPos.x, bossPos.y);
-            msg_lable.Text = $"{name} 瞬移成功";
         }
+
 
         /// <summary>
         ///  设置 角色位置
@@ -187,6 +198,48 @@ namespace Main
         {
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionXAddress, _pid, x);
             MemoryUtils.WriteMemoryFloatValue(_heroInfo.PositionYAddress, _pid, y);
+        }
+
+
+        /// <summary>
+        /// 自动初始化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void auto_init_button_Click(object sender, EventArgs e)
+        {
+            init_game_button_Click(sender, e);
+            level5_button_Click(sender, e);
+            li_liang_max_button_Click(sender, e);
+            zhi_li_max_Click(sender, e);
+        }
+
+        /// <summary>
+        /// 自动刷boss
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void auto_kill_boss_button_Click(object sender, EventArgs e)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                var ignorePositionNameArr = new string[]
+                {
+                    "出生点","竞技场","主城","小海龟","小虾兵"
+                };
+
+                foreach (var item in _bossPositionDic)
+                {
+                    var name = item.Key;
+
+                    if (ignorePositionNameArr.Contains(name)) continue;
+
+                    ShunYi(name);
+                    Task.Delay(500).Wait();
+                    ShunYi(name);
+                    Task.Delay(500).Wait();
+                }
+            });
         }
     }
 }

@@ -76,6 +76,8 @@
             this.button20 = new System.Windows.Forms.Button();
             this.button34 = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.button35 = new System.Windows.Forms.Button();
+            this.button36 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -205,9 +207,9 @@
             this.groupBox3.Controls.Add(this.button11);
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Controls.Add(this.button20);
-            this.groupBox3.Location = new System.Drawing.Point(111, 37);
+            this.groupBox3.Location = new System.Drawing.Point(107, 94);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(297, 464);
+            this.groupBox3.Size = new System.Drawing.Size(297, 453);
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "瞬移";
@@ -243,7 +245,7 @@
             this.groupBox5.Controls.Add(this.button10);
             this.groupBox5.Controls.Add(this.button13);
             this.groupBox5.Controls.Add(this.button14);
-            this.groupBox5.Location = new System.Drawing.Point(14, 215);
+            this.groupBox5.Location = new System.Drawing.Point(14, 203);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(271, 235);
             this.groupBox5.TabIndex = 1;
@@ -462,7 +464,7 @@
             this.groupBox4.Controls.Add(this.button3);
             this.groupBox4.Controls.Add(this.button2);
             this.groupBox4.Controls.Add(this.button1);
-            this.groupBox4.Location = new System.Drawing.Point(14, 49);
+            this.groupBox4.Location = new System.Drawing.Point(14, 50);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(271, 149);
             this.groupBox4.TabIndex = 0;
@@ -599,12 +601,34 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "技能";
             // 
+            // button35
+            // 
+            this.button35.Location = new System.Drawing.Point(113, 48);
+            this.button35.Name = "button35";
+            this.button35.Size = new System.Drawing.Size(80, 23);
+            this.button35.TabIndex = 13;
+            this.button35.Text = "一键初始化";
+            this.button35.UseVisualStyleBackColor = true;
+            this.button35.Click += new System.EventHandler(this.auto_init_button_Click);
+            // 
+            // button36
+            // 
+            this.button36.Location = new System.Drawing.Point(201, 48);
+            this.button36.Name = "button36";
+            this.button36.Size = new System.Drawing.Size(123, 23);
+            this.button36.TabIndex = 14;
+            this.button36.Text = "一键自动刷boss";
+            this.button36.UseVisualStyleBackColor = true;
+            this.button36.Click += new System.EventHandler(this.auto_kill_boss_button_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(416, 509);
+            this.ClientSize = new System.Drawing.Size(416, 558);
+            this.Controls.Add(this.button36);
             this.Controls.Add(this.groupBox6);
+            this.Controls.Add(this.button35);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.init_game_button);
             this.Controls.Add(this.msg_lable);
@@ -675,6 +699,8 @@
         private System.Windows.Forms.Button button33;
         private System.Windows.Forms.Button button34;
         private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button button35;
+        private System.Windows.Forms.Button button36;
     }
 }
 

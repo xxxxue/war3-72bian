@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MyUtils;
 
-namespace Main.Helper
+namespace Main.Shared
 {
     public class InfoHelper
     {
