@@ -638,6 +638,7 @@
             this.Name = "Form1";
             this.ShowIcon = false;
             this.Text = "七十二变修改器";
+            this.TopMost = true;
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
