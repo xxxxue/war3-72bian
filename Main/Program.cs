@@ -9,7 +9,7 @@ namespace Main
         static void Main()
         {
             try
-            {
+            {           
                 //处理未捕获的异常
                 Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
                 //处理UI线程异常
