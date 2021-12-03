@@ -1,33 +1,14 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MyUtils
 {
-    
+    /// <summary>
+    /// 内存读写工具类
+    /// </summary>
     public class MemoryUtils
     {
-        #region API
-
-        //从指定内存中读取字节集数据
-        [DllImport("kernel32.dll", EntryPoint = "ReadProcessMemory")]
-        private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, IntPtr lpNumberOfBytesRead);
-
-        //从指定内存中写入字节集数据
-        [DllImport("kernel32.dll", EntryPoint = "WriteProcessMemory")]
-        private static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, IntPtr lpNumberOfBytesWritten);
-
-        //打开一个已存在的进程对象，并返回进程的句柄
-        [DllImport("kernel32.dll", EntryPoint = "OpenProcess")]
-        private static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
-
-        //关闭一个内核对象。其中包括文件、文件映射、进程、线程、安全和同步对象等。
-        [DllImport("kernel32.dll")]
-        private static extern void CloseHandle(IntPtr hObject);
-
-        #endregion             
-
         // byte		(字节   1字节)
         // int16    (short 2字节),
         // int32    (int   4字节),
@@ -39,6 +20,7 @@ namespace MyUtils
 
         private IntPtr _handle = IntPtr.Zero;
         private int _pid = 0;
+
         public MemoryUtils(int pid)
         {
             _pid = pid;
@@ -51,12 +33,14 @@ namespace MyUtils
         }
 
         #region Read
+
         public byte[] ReadToBytes(IntPtr address, int size)
         {
             byte[] buffer = new byte[size];
             ReadProcessMemory(_handle, address, buffer, size, IntPtr.Zero);
             return buffer;
         }
+
         public T ReadObject<T>(IntPtr address) where T : struct
         {
             var buffer = ReadToBytes(address, Marshal.SizeOf(typeof(T)));
@@ -77,6 +61,7 @@ namespace MyUtils
             byte[] buffer = ReadToBytes(address, sizeof(char));
             return BitConverter.ToChar(buffer, 0);
         }
+
         public short ReadToShort(IntPtr address)
         {
             byte[] buffer = ReadToBytes(address, sizeof(short));
@@ -114,7 +99,7 @@ namespace MyUtils
             return BitConverter.ToString(buffer);
         }
 
-        #endregion
+        #endregion Read
 
         #region Write
 
@@ -158,21 +143,21 @@ namespace MyUtils
             return WriteByteArray(address, Encoding.Default.GetBytes(value));
         }
 
-        #endregion
+        #endregion Write
 
         #region Utils
 
         /// <summary>
         /// 根据 进程名 获取 PID
-        /// </summary>    
+        /// </summary>
         public static int GetPidByProcessName(string processName)
         {
             return GetProcessByProcessName(processName)?.Id ?? 0;
         }
 
         /// <summary>
-        /// 通过 进程名(不加exe后缀) 获取 进程对象   
-        /// </summary>      
+        /// 通过 进程名(不加exe后缀) 获取 进程对象
+        /// </summary>
         public static Process GetProcessByProcessName(string processName)
         {
             var processArr = Process.GetProcessesByName(processName);
@@ -186,7 +171,7 @@ namespace MyUtils
 
         /// <summary>
         /// 根据窗体标题查找窗口句柄（支持模糊匹配）
-        /// </summary>    
+        /// </summary>
         public static IntPtr FindWindow(string title)
         {
             var processArray = Process.GetProcesses();
@@ -203,7 +188,7 @@ namespace MyUtils
 
         /// <summary>
         /// 获取进程中模块的基址 (例如: Game.dll / War3.exe)
-        /// </summary>  
+        /// </summary>
         public IntPtr GetModuleBaseAddress(string moduleName)
         {
             var process = Process.GetProcessById(_pid);
@@ -224,7 +209,7 @@ namespace MyUtils
 
         /// <summary>
         /// 读取内存的值
-        /// </summary>   
+        /// </summary>
         public IntPtr GetMemoryAddress(string moduleName, params int[] offsetArray)
         {
             if ((offsetArray?.Length ?? 0) == 0)
@@ -253,13 +238,13 @@ namespace MyUtils
             return addr;
         }
 
-        #endregion
+        #endregion Utils
 
         #region 进制转换
 
         /// <summary>
         /// 16进制(0x41)转为10进制(65)
-        /// </summary>   
+        /// </summary>
         public static int ConvertFrom16To10(string value)
         {
             return Convert.ToInt32(value, 16);
@@ -267,7 +252,7 @@ namespace MyUtils
 
         /// <summary>
         /// 16进制(0x41)转为10进制(65)
-        /// </summary>    
+        /// </summary>
         public static int ConvertFrom16To10(int value)
         {
             return Convert.ToInt32(Convert.ToString(value, 10));
@@ -275,7 +260,7 @@ namespace MyUtils
 
         /// <summary>
         /// 10进制(65)转为16进制(0x41)
-        /// </summary>   
+        /// </summary>
         public static string ConvertFrom10To16(int value)
         {
             //x4 0补齐4位
@@ -285,7 +270,7 @@ namespace MyUtils
 
         /// <summary>
         /// 16/10进制转为2进制
-        /// </summary>     
+        /// </summary>
         public static string ConvertFrom16Or10To2(int value)
         {
             return Convert.ToString(value, 2);
@@ -293,13 +278,33 @@ namespace MyUtils
 
         /// <summary>
         /// 2进制(1010)到10进制(2)
-        /// </summary>    
-        public static int ConvertFrom16Or10To22(string value)
+        /// </summary>
+        public static int ConvertFrom2To10(string value)
         {
             return Convert.ToInt32(value, 2);
         }
 
-        #endregion
+        #endregion 进制转换
+
+        #region API
+
+        //从指定内存中读取字节集数据
+        [DllImport("kernel32.dll", EntryPoint = "ReadProcessMemory")]
+        private static extern bool ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, IntPtr lpNumberOfBytesRead);
+
+        //从指定内存中写入字节集数据
+        [DllImport("kernel32.dll", EntryPoint = "WriteProcessMemory")]
+        private static extern bool WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, byte[] lpBuffer, int dwSize, IntPtr lpNumberOfBytesWritten);
+
+        //打开一个已存在的进程对象，并返回进程的句柄
+        [DllImport("kernel32.dll", EntryPoint = "OpenProcess")]
+        private static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+
+        //关闭一个内核对象。其中包括文件、文件映射、进程、线程、安全和同步对象等。
+        [DllImport("kernel32.dll")]
+        private static extern void CloseHandle(IntPtr hObject);
+
+        #endregion API
 
     }
 }
