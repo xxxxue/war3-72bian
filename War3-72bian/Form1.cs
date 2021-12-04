@@ -103,8 +103,6 @@ namespace War3_72bian
         {
             // 修改经验
             _memoryUtils.WriteInt(_heroInfo.JinYanAddress, value);
-
-            this.Text = "当前经验:" + _memoryUtils.ReadToInt(_heroInfo.JinYanAddress);
         }
 
         /// <summary>
@@ -137,8 +135,6 @@ namespace War3_72bian
         private void li_liang_max_button_Click(object sender, EventArgs e)
         {
             _memoryUtils.WriteInt(_heroInfo.LiLiangAddress, 50000);
-
-            this.Text = _memoryUtils.ReadToInt(_heroInfo.LiLiangAddress).ToString();
         }
 
         /// <summary>
@@ -147,8 +143,6 @@ namespace War3_72bian
         private void min_jie_max_button_Click(object sender, EventArgs e)
         {
             _memoryUtils.WriteInt(_heroInfo.MinJieAddress, 10000);
-
-            this.Text = _memoryUtils.ReadToInt(_heroInfo.MinJieAddress).ToString();
         }
 
         /// <summary>
@@ -157,8 +151,6 @@ namespace War3_72bian
         private void zhi_li_max_Click(object sender, EventArgs e)
         {
             _memoryUtils.WriteInt(_heroInfo.ZhiLiAddress, 100000);
-
-            this.Text = _memoryUtils.ReadToInt(_heroInfo.ZhiLiAddress).ToString();
         }
 
         /// <summary>
@@ -167,9 +159,6 @@ namespace War3_72bian
         private void yi_su_max_button_Click(object sender, EventArgs e)
         {
             _memoryUtils.WriteFloat(_heroInfo.YiSuAddress, 522);
-
-            //内存单浮点 类型 转为 人类可读的 十进制
-            this.Text = _memoryUtils.ReadToFloat(_heroInfo.YiSuAddress).ToString();
         }
 
         /// <summary>
@@ -177,9 +166,7 @@ namespace War3_72bian
         /// </summary>
         private void first_skill_time_button_Click(object sender, EventArgs e)
         {
-            _memoryUtils.WriteFloat(_heroInfo.FirstSkillTimeAddress, 0.5f);
-
-            this.Text = _memoryUtils.ReadToFloat(_heroInfo.FirstSkillTimeAddress).ToString();
+            _memoryUtils.WriteFloat(_heroInfo.FirstSkillTimeAddress, 0.3f);
         }
 
         /// <summary>
@@ -189,7 +176,6 @@ namespace War3_72bian
         {
             var name = ((Button)sender).Text;
             ShunYi(name);
-            this.Text = $"{name} 瞬移成功";
         }
 
         /// <summary>
@@ -275,9 +261,9 @@ namespace War3_72bian
                     if (ignorePositionNameArr.Contains(name)) continue;
 
                     ShunYi(name);
-                    Task.Delay(500).Wait();
+                    Delay(500);
                     ShunYi(name);
-                    Task.Delay(500).Wait();
+                    Delay(500);
                 }
             }
 
@@ -291,6 +277,15 @@ namespace War3_72bian
 
             void Delay(int ms) => Task.Delay(ms).Wait();
 
+            void DelayMsg(string msg, int ms)
+            {
+                for (int i = ms / 1000; i >= 0; i--)
+                {
+                    ShowMsg(msg + ": " + i);
+                    Delay(1000);
+                }
+            }
+
             // 平台进程名  Platform
             // 平台开始游戏按钮 576, 569
 
@@ -303,7 +298,7 @@ namespace War3_72bian
             // 返回平台按钮  629, 76
 
             // 记录局数
-            var count = 0;
+            var count = 1;
 
             void Start()
             {
@@ -311,7 +306,7 @@ namespace War3_72bian
                 MouseKeyboardUtils.MoveTo(GetWindowHandle("Platform"), 576, 569);
                 Delay(1000);
                 MouseKeyboardUtils.LeftClick();
-                Delay(40000);
+                DelayMsg("等待游戏加载", 40000);
 
                 gameHandle = GetWindowHandle(_processName);
 
@@ -329,9 +324,9 @@ namespace War3_72bian
                 Delay(5000);
 
                 // 点击头像
-                MoveToUser();
-                MouseKeyboardUtils.LeftDoubleClick();
-                Delay(2000);
+                //MoveToUser();
+                //MouseKeyboardUtils.LeftDoubleClick();
+                //Delay(2000);
 
                 //移动到商店附近
                 MoveToShop();
@@ -344,17 +339,17 @@ namespace War3_72bian
                 //点击宠物头像
                 MouseKeyboardUtils.MoveTo(gameHandle, 35, 633);
                 MouseKeyboardUtils.LeftDoubleClick();
-                Delay(2000);
+                Delay(1000);
 
                 // 让宠物走到NPC附近,激活任务
                 MouseKeyboardUtils.MoveTo(gameHandle, 489, 315);
                 MouseKeyboardUtils.RightDoubleClick();
-                Delay(2000);
+                Delay(1000);
 
                 // 点击商店
                 MoveToShop();
                 MouseKeyboardUtils.LeftDoubleClick();
-                Delay(2000);
+                Delay(1000);
 
                 // 点击力量果实,触发属性变更,血量重新计算
                 MouseKeyboardUtils.MoveTo(gameHandle, 1006, 750);
@@ -365,8 +360,10 @@ namespace War3_72bian
                 MoveToUser();
                 MouseKeyboardUtils.LeftClick();
 
+                int initStep = 0;
+
                 //瞬移到小海龟
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 18; i++)
                 {
                     ShunYi("小海龟");
 
@@ -374,27 +371,33 @@ namespace War3_72bian
                     var jinYanValue = _memoryUtils.ReadToInt(_heroInfo.JinYanAddress);
 
                     //5级前
-                    if (jinYanValue < 2222)
+                    if (initStep == 0 && jinYanValue != 2222)
                     {
                         level_max_button_Click(sender, e);
+                        initStep = 1;
                     }
-                    else if (jinYanValue < 2222) // 5级以后
+                    // 5级以后
+                    if (initStep == 1 && jinYanValue > 2222) 
                     {
-                        first_skill_time_button_Click(sender, e);
+                        if (_memoryUtils.ReadToFloat(_heroInfo.FirstSkillTimeAddress) >= 1)
+                        {
+                            first_skill_time_button_Click(sender, e);
+                        }
                     }
 
-                    Delay(2000);
+                    Delay(1000);
                 }
 
-                for (int i = 0; i < 8; i++)
+                for (int i = 0; i < 10; i++)
                 {
                     ShunYi("小虾兵");
-                    Delay(2000);
+                    Delay(1000);
                 }
 
-                Delay(3000);
+                DelayMsg("准备扫荡boss", 3000);
                 KillAllBoss();
-                Delay(43000);
+
+                DelayMsg("扫荡结束,等待退出", 14000);
 
                 // 点击 返回平台
                 MouseKeyboardUtils.MoveTo(gameHandle, 629, 76);
@@ -410,8 +413,7 @@ namespace War3_72bian
                         {
                             ShowMsg($"正在进行第{count}局");
                             Start();
-                            Delay(10000);
-                            ShowMsg($"准备进行第{count}局");
+                            DelayMsg("等待开始下一局", 10000);
                         }
                     }
                     catch (Exception e)
