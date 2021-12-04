@@ -54,8 +54,8 @@ namespace War3_72bian
             {"黄眉大王", "187.9,708.4"},
         };
 
-        private HeroInfo _heroInfo = default;
-        private MemoryUtils _memoryUtils = default;
+        private HeroInfo _heroInfo;
+        private MemoryUtils _memoryUtils;
 
         public Form1()
         {
@@ -235,6 +235,17 @@ namespace War3_72bian
         {
             var gameHandle = IntPtr.Zero;
 
+            var 平台_进程名 = "Platform";
+            var 平台_开始游戏按钮坐标 = new[] { 576, 569 };
+            var 游戏_选择难度坐标 = new[] { 722, 465 };
+            var 游戏_仙子坐标 = new[] { 382, 493 };
+            var 游戏_人物头像坐标 = new[] { 34, 74 };
+            var 游戏_商店坐标 = new[] { 778, 280 };
+            var 游戏_宠物头像坐标 = new[] { 35, 633 };
+            var 游戏_NPC坐标 = new[] { 489, 315 };
+            var 游戏_力量果实坐标 = new[] { 1006, 750 };
+            var 游戏_返回平台按钮坐标 = new[] { 629, 76 };
+
             //获取窗口句柄
             IntPtr GetWindowHandle(string processName)
             {
@@ -267,11 +278,9 @@ namespace War3_72bian
                 }
             }
 
-            void MoveToShop() => MouseKeyboardUtils.MoveTo(gameHandle, 778, 280);
+            void MoveToShop() => MouseKeyboardUtils.MoveTo(gameHandle, 游戏_商店坐标[0], 游戏_商店坐标[1]);
 
-            void MoveToUser() => MouseKeyboardUtils.MoveTo(gameHandle, 34, 74);
-
-            void MoveToCenter() => MouseKeyboardUtils.MoveTo(gameHandle, 630, 392);
+            void MoveToUser() => MouseKeyboardUtils.MoveTo(gameHandle, 游戏_人物头像坐标[0], 游戏_人物头像坐标[1]);
 
             void ShowMsg(string msg) => this.Invoke(() => this.Text = msg);
 
@@ -286,24 +295,13 @@ namespace War3_72bian
                 }
             }
 
-            // 平台进程名  Platform
-            // 平台开始游戏按钮 576, 569
-
-            // 人物头像  34, 74
-            // 宠物头像  35, 633
-            // 选择难度 722,465
-            // 仙子   382, 493
-            // 商店   778, 280
-            // NPC   489,315
-            // 返回平台按钮  629, 76
-
             // 记录局数
             var count = 1;
 
             void Start()
             {
                 // 点击开始
-                MouseKeyboardUtils.MoveTo(GetWindowHandle("Platform"), 576, 569);
+                MouseKeyboardUtils.MoveTo(GetWindowHandle(平台_进程名), 平台_开始游戏按钮坐标[0], 平台_开始游戏按钮坐标[1]);
                 Delay(1000);
                 MouseKeyboardUtils.LeftClick();
                 DelayMsg("等待游戏加载", 40000);
@@ -312,14 +310,14 @@ namespace War3_72bian
 
                 Delay(2000);
                 // 选择难度
-                MouseKeyboardUtils.MoveTo(gameHandle, 722, 465);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_选择难度坐标[0], 游戏_选择难度坐标[1]);
                 MouseKeyboardUtils.LeftClick();
                 Delay(2000);
                 MouseKeyboardUtils.LeftClick();
                 Delay(2000);
 
                 //选择角色
-                MouseKeyboardUtils.MoveTo(gameHandle, 382, 493);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_仙子坐标[0], 游戏_仙子坐标[1]);
                 MouseKeyboardUtils.LeftDoubleClick();
                 Delay(5000);
 
@@ -337,12 +335,12 @@ namespace War3_72bian
                 auto_init_button_Click(sender, e);
 
                 //点击宠物头像
-                MouseKeyboardUtils.MoveTo(gameHandle, 35, 633);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_宠物头像坐标[0], 游戏_宠物头像坐标[1]);
                 MouseKeyboardUtils.LeftDoubleClick();
                 Delay(1000);
 
                 // 让宠物走到NPC附近,激活任务
-                MouseKeyboardUtils.MoveTo(gameHandle, 489, 315);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_NPC坐标[0], 游戏_NPC坐标[1]);
                 MouseKeyboardUtils.RightDoubleClick();
                 Delay(1000);
 
@@ -352,7 +350,7 @@ namespace War3_72bian
                 Delay(1000);
 
                 // 点击力量果实,触发属性变更,血量重新计算
-                MouseKeyboardUtils.MoveTo(gameHandle, 1006, 750);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_力量果实坐标[0], 游戏_力量果实坐标[1]);
                 MouseKeyboardUtils.LeftClick();
                 Delay(1000);
 
@@ -377,7 +375,7 @@ namespace War3_72bian
                         initStep = 1;
                     }
                     // 5级以后
-                    if (initStep == 1 && jinYanValue > 2222) 
+                    if (initStep == 1 && jinYanValue > 2222)
                     {
                         if (_memoryUtils.ReadToFloat(_heroInfo.FirstSkillTimeAddress) >= 1)
                         {
@@ -400,28 +398,28 @@ namespace War3_72bian
                 DelayMsg("扫荡结束,等待退出", 14000);
 
                 // 点击 返回平台
-                MouseKeyboardUtils.MoveTo(gameHandle, 629, 76);
+                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_返回平台按钮坐标[0], 游戏_返回平台按钮坐标[1]);
                 MouseKeyboardUtils.LeftClick();
                 count++;
             }
 
             Task.Factory.StartNew(() =>
-                {
-                    try
-                    {
-                        while (true)
-                        {
-                            ShowMsg($"正在进行第{count}局");
-                            Start();
-                            DelayMsg("等待开始下一局", 10000);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        //将异常抛给主线程
-                        this.BeginInvoke(() => throw e);
-                    }
-                });
+                 {
+                     try
+                     {
+                         while (true)
+                         {
+                             ShowMsg($"正在进行第{count}局");
+                             Start();
+                             DelayMsg("等待开始下一局", 10000);
+                         }
+                     }
+                     catch (Exception e)
+                     {
+                         //将异常抛给主线程
+                         this.BeginInvoke(() => throw e);
+                     }
+                 });
         }
     }
 }
