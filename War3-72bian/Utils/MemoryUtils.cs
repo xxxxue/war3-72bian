@@ -156,10 +156,16 @@ namespace MyUtils
         }
 
         /// <summary>
-        /// 通过 进程名(不加exe后缀) 获取 进程对象
+        /// 通过 进程名  获取 进程对象
         /// </summary>
         public static Process GetProcessByProcessName(string processName)
         {
+            // 移除.exe后缀
+            if (processName.Contains(".exe"))
+            {
+                processName = processName.Replace(".exe", "");
+            }
+
             var processArr = Process.GetProcessesByName(processName);
             if (processArr.Length > 0)
             {
@@ -238,6 +244,23 @@ namespace MyUtils
             return addr;
         }
 
+        /// <summary>
+        /// 通过进程名 获取窗口句柄
+        /// </summary>
+        /// <param name="processName"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static IntPtr GetWindowHwndByProcessName(string processName)
+        {
+            var hwnd = MemoryUtils.GetProcessByProcessName(processName)?.MainWindowHandle ?? IntPtr.Zero;
+
+            if (hwnd == IntPtr.Zero)
+            {
+                throw new Exception($"没有找到[{processName}]进程..");
+            }
+            return hwnd;
+        }
+
         #endregion Utils
 
         #region 进制转换
@@ -262,6 +285,13 @@ namespace MyUtils
         /// 10进制(65)转为16进制(0x41)
         /// </summary>
         public static string ConvertFrom10To16(int value)
+        {
+            //x4 0补齐4位
+            //x8 0补齐8位
+            return value.ToString("x");
+        }
+
+        public static string ConvertFrom10To16(IntPtr value)
         {
             //x4 0补齐4位
             //x8 0补齐8位
@@ -305,6 +335,5 @@ namespace MyUtils
         private static extern void CloseHandle(IntPtr hObject);
 
         #endregion API
-
     }
 }

@@ -1,4 +1,6 @@
-﻿using MyUtils;
+﻿using System.Runtime.InteropServices;
+
+using MyUtils;
 
 using War3_72bian.Model;
 
@@ -55,7 +57,11 @@ namespace War3_72bian
         };
 
         private HeroInfo _heroInfo;
+
         private MemoryUtils _memoryUtils;
+
+        // 免注册大漠
+        private Idmsoft _dm = new DmSoft("Dll/dm3.dll").DM;
 
         public Form1()
         {
@@ -97,10 +103,22 @@ namespace War3_72bian
         }
 
         /// <summary>
+        /// 调用易语言的窗口写字
+        /// </summary>
+        /// <param name="hwnd"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        [DllImport("/Dll/JinYi.dll", EntryPoint = "WindowWriteText")]
+        private static extern IntPtr WindowWriteText(IntPtr hwnd, string text);
+
+        /// <summary>
         /// 修改经验
         /// </summary>
         private void ModifyJingYan(int value)
         {
+            //var handle = MemoryUtils.GetWindowHwndByProcessName("WndEye.exe");
+            //WindowWriteText(handle, "我是测试文本");
+
             // 修改经验
             _memoryUtils.WriteInt(_heroInfo.JinYanAddress, value);
         }
@@ -202,7 +220,7 @@ namespace War3_72bian
 
             if (bossPos == null)
             {
-                throw new Exception($"没有与[{name}]匹配的信息..");
+                throw new Exception($"没有与[{name}]匹配的boss信息..");
             }
 
             SetHeroPosition(bossPos.x, bossPos.y);
@@ -233,7 +251,8 @@ namespace War3_72bian
         /// </summary>
         private void auto_kill_boss_button_Click(object sender, EventArgs e)
         {
-            var gameHandle = IntPtr.Zero;
+            // 记录局数
+            var count = 1;
 
             var 平台_进程名 = "Platform";
             var 平台_开始游戏按钮坐标 = new[] { 576, 569 };
@@ -246,18 +265,7 @@ namespace War3_72bian
             var 游戏_力量果实坐标 = new[] { 1006, 750 };
             var 游戏_返回平台按钮坐标 = new[] { 629, 76 };
 
-            //获取窗口句柄
-            IntPtr GetWindowHandle(string processName)
-            {
-                var handle = MemoryUtils.GetProcessByProcessName(processName)?.MainWindowHandle ?? IntPtr.Zero;
-
-                if (handle == IntPtr.Zero)
-                {
-                    throw new Exception($"没有找到[{processName}]进程..");
-                }
-                return handle;
-            }
-
+            // 扫荡boss
             void KillAllBoss()
             {
                 var ignorePositionNameArr = new string[]
@@ -278,14 +286,13 @@ namespace War3_72bian
                 }
             }
 
-            void MoveToShop() => MouseKeyboardUtils.MoveTo(gameHandle, 游戏_商店坐标[0], 游戏_商店坐标[1]);
+            // 显示消息
+            void ShowMsg(string msg) => this.Invoke(() => this.Text = $"当前第{count}局 --- " + msg);
 
-            void MoveToUser() => MouseKeyboardUtils.MoveTo(gameHandle, 游戏_人物头像坐标[0], 游戏_人物头像坐标[1]);
-
-            void ShowMsg(string msg) => this.Invoke(() => this.Text = msg);
-
+            // 延时
             void Delay(int ms) => Task.Delay(ms).Wait();
 
+            // 倒计时
             void DelayMsg(string msg, int ms)
             {
                 for (int i = ms / 1000; i >= 0; i--)
@@ -295,72 +302,94 @@ namespace War3_72bian
                 }
             }
 
-            // 记录局数
-            var count = 1;
+            // 绑定dm窗口
+            void BindWindow(string processName)
+            {
+                var hwnd = MemoryUtils.GetWindowHwndByProcessName(processName);
+                var ret = _dm.BindWindow((int)hwnd, "normal", "normal", "normal", 0);
+                if (ret == 0)
+                {
+                    throw new Exception("游戏窗口绑定失败");
+                }
+            }
+
+            // 移动到坐标点并点击鼠标
+            void MoveToClick(int[] pos, bool isRight = false, bool isDoubleClick = false)
+            {
+                _dm.MoveTo(pos[0], pos[1]);
+                Delay(500);
+
+                if (isRight)
+                {
+                    if (isDoubleClick)
+                    {
+                        _dm.RightClick();
+                        Delay(100);
+                    }
+                    _dm.RightClick();
+                }
+                else
+                {
+                    if (isDoubleClick)
+                    {
+                        _dm.LeftClick();
+                        Delay(100);
+                    }
+                    _dm.LeftClick();
+                }
+
+                Delay(1000);
+            }
 
             void Start()
             {
+                // 绑定平台句柄
+                BindWindow(平台_进程名);
+
                 // 点击开始
-                MouseKeyboardUtils.MoveTo(GetWindowHandle(平台_进程名), 平台_开始游戏按钮坐标[0], 平台_开始游戏按钮坐标[1]);
-                Delay(1000);
-                MouseKeyboardUtils.LeftClick();
+                MoveToClick(平台_开始游戏按钮坐标);
+
                 DelayMsg("等待游戏加载", 40000);
 
-                gameHandle = GetWindowHandle(_processName);
+                // 绑定游戏句柄
+                BindWindow(_processName);
 
                 Delay(2000);
+
                 // 选择难度
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_选择难度坐标[0], 游戏_选择难度坐标[1]);
-                MouseKeyboardUtils.LeftClick();
-                Delay(2000);
-                MouseKeyboardUtils.LeftClick();
-                Delay(2000);
+                MoveToClick(游戏_选择难度坐标);
 
-                //选择角色
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_仙子坐标[0], 游戏_仙子坐标[1]);
-                MouseKeyboardUtils.LeftDoubleClick();
+                Delay(1000);
+
+                // 选择角色
+                MoveToClick(游戏_仙子坐标, isDoubleClick: true);
+
                 Delay(5000);
 
-                // 点击头像
-                //MoveToUser();
-                //MouseKeyboardUtils.LeftDoubleClick();
-                //Delay(2000);
+                // 移动到商店附近
+                MoveToClick(游戏_商店坐标, isRight: true);
 
-                //移动到商店附近
-                MoveToShop();
-                MouseKeyboardUtils.RightDoubleClick();
-                Delay(2000);
-
-                //调用自动初始化
+                // 调用自动初始化
                 auto_init_button_Click(sender, e);
 
-                //点击宠物头像
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_宠物头像坐标[0], 游戏_宠物头像坐标[1]);
-                MouseKeyboardUtils.LeftDoubleClick();
-                Delay(1000);
+                // 点击宠物头像
+                MoveToClick(游戏_宠物头像坐标);
 
                 // 让宠物走到NPC附近,激活任务
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_NPC坐标[0], 游戏_NPC坐标[1]);
-                MouseKeyboardUtils.RightDoubleClick();
-                Delay(1000);
+                MoveToClick(游戏_NPC坐标, isRight: true);
 
                 // 点击商店
-                MoveToShop();
-                MouseKeyboardUtils.LeftDoubleClick();
-                Delay(1000);
+                MoveToClick(游戏_商店坐标);
 
                 // 点击力量果实,触发属性变更,血量重新计算
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_力量果实坐标[0], 游戏_力量果实坐标[1]);
-                MouseKeyboardUtils.LeftClick();
-                Delay(1000);
+                MoveToClick(游戏_力量果实坐标);
 
                 // 点击头像
-                MoveToUser();
-                MouseKeyboardUtils.LeftClick();
+                MoveToClick(游戏_人物头像坐标);
 
                 int initStep = 0;
 
-                //瞬移到小海龟
+                // 瞬移到小海龟
                 for (int i = 0; i < 18; i++)
                 {
                     ShunYi("小海龟");
@@ -386,30 +415,30 @@ namespace War3_72bian
                     Delay(1000);
                 }
 
+                // 瞬移到小虾兵
                 for (int i = 0; i < 10; i++)
                 {
                     ShunYi("小虾兵");
                     Delay(1000);
                 }
 
-                DelayMsg("准备扫荡boss", 3000);
+                // 扫荡boss
                 KillAllBoss();
 
                 DelayMsg("扫荡结束,等待退出", 14000);
 
                 // 点击 返回平台
-                MouseKeyboardUtils.MoveTo(gameHandle, 游戏_返回平台按钮坐标[0], 游戏_返回平台按钮坐标[1]);
-                MouseKeyboardUtils.LeftClick();
+                MoveToClick(游戏_返回平台按钮坐标);
+
                 count++;
             }
 
-            Task.Factory.StartNew(() =>
+            Task.Run(() =>
                  {
                      try
                      {
                          while (true)
                          {
-                             ShowMsg($"正在进行第{count}局");
                              Start();
                              DelayMsg("等待开始下一局", 10000);
                          }

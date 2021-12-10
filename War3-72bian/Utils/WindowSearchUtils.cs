@@ -213,6 +213,20 @@ namespace MyUtils
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
 
+        [DllImport("User32.dll", EntryPoint = "FindWindow")]
+        private static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
+
+        /// <summary>
+        /// 通过className/title 查找窗口
+        /// </summary>
+        /// <param name="className"></param>
+        /// <param name="title"></param>
+        /// <returns></returns>
+        public static IntPtr FindWindowByClassNameOrTitle(string className = null, string title = null)
+        {
+            return FindWindow(className, title);
+        }
+
         /// <summary>
         /// Returns a list of child windows
         /// </summary>
