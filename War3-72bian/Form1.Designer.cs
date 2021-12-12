@@ -32,7 +32,7 @@
             this.level25_button = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.level5_button = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox = new System.Windows.Forms.GroupBox();
             this.button33 = new System.Windows.Forms.Button();
             this.yi_su_max_button = new System.Windows.Forms.Button();
             this.min_jie_max_button = new System.Windows.Forms.Button();
@@ -77,12 +77,15 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.button35 = new System.Windows.Forms.Button();
             this.button36 = new System.Windows.Forms.Button();
+            this.more_groupBox = new System.Windows.Forms.GroupBox();
+            this.show_more_button = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.groupBox.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.more_groupBox.SuspendLayout();
             this.SuspendLayout();
             // 
             // level_max_button
@@ -112,7 +115,7 @@
             this.groupBox1.Controls.Add(this.level_max_button);
             this.groupBox1.Controls.Add(this.level5_button);
             this.groupBox1.Controls.Add(this.level25_button);
-            this.groupBox1.Location = new System.Drawing.Point(9, 7);
+            this.groupBox1.Location = new System.Drawing.Point(7, 79);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
@@ -132,20 +135,20 @@
             this.level5_button.UseVisualStyleBackColor = true;
             this.level5_button.Click += new System.EventHandler(this.level5_button_Click);
             // 
-            // groupBox2
+            // groupBox
             // 
-            this.groupBox2.Controls.Add(this.button33);
-            this.groupBox2.Controls.Add(this.yi_su_max_button);
-            this.groupBox2.Controls.Add(this.min_jie_max_button);
-            this.groupBox2.Controls.Add(this.li_liang_max_button);
-            this.groupBox2.Location = new System.Drawing.Point(9, 150);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox2.Size = new System.Drawing.Size(97, 178);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "修改属性";
+            this.groupBox.Controls.Add(this.button33);
+            this.groupBox.Controls.Add(this.yi_su_max_button);
+            this.groupBox.Controls.Add(this.min_jie_max_button);
+            this.groupBox.Controls.Add(this.li_liang_max_button);
+            this.groupBox.Location = new System.Drawing.Point(7, 229);
+            this.groupBox.Margin = new System.Windows.Forms.Padding(4);
+            this.groupBox.Name = "groupBox";
+            this.groupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.groupBox.Size = new System.Drawing.Size(97, 178);
+            this.groupBox.TabIndex = 5;
+            this.groupBox.TabStop = false;
+            this.groupBox.Text = "修改属性";
             // 
             // button33
             // 
@@ -193,7 +196,7 @@
             // 
             // init_game_button
             // 
-            this.init_game_button.Location = new System.Drawing.Point(129, 8);
+            this.init_game_button.Location = new System.Drawing.Point(20, 27);
             this.init_game_button.Margin = new System.Windows.Forms.Padding(4);
             this.init_game_button.Name = "init_game_button";
             this.init_game_button.Size = new System.Drawing.Size(80, 31);
@@ -209,7 +212,7 @@
             this.groupBox3.Controls.Add(this.button11);
             this.groupBox3.Controls.Add(this.groupBox4);
             this.groupBox3.Controls.Add(this.button20);
-            this.groupBox3.Location = new System.Drawing.Point(114, 39);
+            this.groupBox3.Location = new System.Drawing.Point(112, 80);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(4);
@@ -635,7 +638,7 @@
             // groupBox6
             // 
             this.groupBox6.Controls.Add(this.button34);
-            this.groupBox6.Location = new System.Drawing.Point(9, 330);
+            this.groupBox6.Location = new System.Drawing.Point(7, 415);
             this.groupBox6.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.Padding = new System.Windows.Forms.Padding(4);
@@ -646,7 +649,7 @@
             // 
             // button35
             // 
-            this.button35.Location = new System.Drawing.Point(214, 7);
+            this.button35.Location = new System.Drawing.Point(127, 26);
             this.button35.Margin = new System.Windows.Forms.Padding(4);
             this.button35.Name = "button35";
             this.button35.Size = new System.Drawing.Size(80, 33);
@@ -657,7 +660,7 @@
             // 
             // button36
             // 
-            this.button36.Location = new System.Drawing.Point(302, 8);
+            this.button36.Location = new System.Drawing.Point(32, 13);
             this.button36.Margin = new System.Windows.Forms.Padding(4);
             this.button36.Name = "button36";
             this.button36.Size = new System.Drawing.Size(80, 33);
@@ -666,19 +669,40 @@
             this.button36.UseVisualStyleBackColor = true;
             this.button36.Click += new System.EventHandler(this.auto_kill_boss_button_Click);
             // 
+            // more_groupBox
+            // 
+            this.more_groupBox.Controls.Add(this.groupBox1);
+            this.more_groupBox.Controls.Add(this.groupBox);
+            this.more_groupBox.Controls.Add(this.button35);
+            this.more_groupBox.Controls.Add(this.groupBox6);
+            this.more_groupBox.Controls.Add(this.init_game_button);
+            this.more_groupBox.Controls.Add(this.groupBox3);
+            this.more_groupBox.Location = new System.Drawing.Point(12, 57);
+            this.more_groupBox.Name = "more_groupBox";
+            this.more_groupBox.Size = new System.Drawing.Size(406, 559);
+            this.more_groupBox.TabIndex = 15;
+            this.more_groupBox.TabStop = false;
+            this.more_groupBox.Text = "更多功能";
+            // 
+            // show_more_button
+            // 
+            this.show_more_button.Location = new System.Drawing.Point(139, 13);
+            this.show_more_button.Name = "show_more_button";
+            this.show_more_button.Size = new System.Drawing.Size(80, 33);
+            this.show_more_button.TabIndex = 16;
+            this.show_more_button.Text = "更多功能";
+            this.show_more_button.UseVisualStyleBackColor = true;
+            this.show_more_button.Click += new System.EventHandler(this.show_more_button_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(418, 252);
+            this.ClientSize = new System.Drawing.Size(430, 624);
+            this.Controls.Add(this.show_more_button);
+            this.Controls.Add(this.more_groupBox);
             this.Controls.Add(this.button36);
-            this.Controls.Add(this.groupBox6);
-            this.Controls.Add(this.button35);
-            this.Controls.Add(this.groupBox3);
-            this.Controls.Add(this.init_game_button);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
@@ -686,11 +710,12 @@
             this.ShowIcon = false;
             this.Text = "七十二变修改器";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
+            this.groupBox.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox5.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
+            this.more_groupBox.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -700,7 +725,7 @@
         private System.Windows.Forms.Button level_max_button;
         private System.Windows.Forms.Button level25_button;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox;
         private System.Windows.Forms.Button yi_su_max_button;
         private System.Windows.Forms.Button min_jie_max_button;
         private System.Windows.Forms.Button li_liang_max_button;
@@ -746,6 +771,8 @@
         private System.Windows.Forms.Button button35;
         private System.Windows.Forms.Button button36;
         private Button level5_button;
+        private GroupBox more_groupBox;
+        private Button show_more_button;
     }
 }
 

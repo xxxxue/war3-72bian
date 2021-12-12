@@ -66,6 +66,10 @@ namespace War3_72bian
         public Form1()
         {
             InitializeComponent();
+
+            // 隐藏 "更多" 并设置窗口大小
+            more_groupBox.Visible = false;
+            this.Size = new Size(274, 107);
         }
 
         /// <summary>
@@ -254,16 +258,16 @@ namespace War3_72bian
             // 记录局数
             var count = 1;
 
-            var 平台_进程名 = "Platform";
-            var 平台_开始游戏按钮坐标 = new[] { 576, 569 };
-            var 游戏_选择难度坐标 = new[] { 722, 465 };
-            var 游戏_仙子坐标 = new[] { 168, 583 };
-            var 游戏_人物头像坐标 = new[] { 34, 74 };
-            var 游戏_商店坐标 = new[] { 871, 216 };
-            var 游戏_宠物头像坐标 = new[] { 35, 633 };
-            var 游戏_NPC坐标 = new[] { 380, 249 };
-            var 游戏_力量果实坐标 = new[] { 1006, 750 };
-            var 游戏_返回平台按钮坐标 = new[] { 629, 76 };
+            var platformProgessName = "Platform";
+            var platformStartGameBtnPosition = new[] { 576, 569 };
+            var gameSelectModePosition = new[] { 722, 465 };
+            var gameHeroPosition = new[] { 168, 583 };
+            var gameHeroHeadImagePosition = new[] { 34, 74 };
+            var gameShopPosition = new[] { 871, 216 };
+            var gameBabyHeadImagePosition = new[] { 35, 633 };
+            var gameNpcPosition = new[] { 380, 249 };
+            var gameLiLiangFruitPosition = new[] { 1006, 750 };
+            var gameExitBtnPosition = new[] { 629, 76 };
 
             // 扫荡boss
             void KillAllBoss()
@@ -344,10 +348,10 @@ namespace War3_72bian
             void Start()
             {
                 // 绑定平台句柄
-                BindWindow(平台_进程名);
+                BindWindow(platformProgessName);
 
                 // 点击开始
-                MoveToClick(平台_开始游戏按钮坐标);
+                MoveToClick(platformStartGameBtnPosition);
 
                 DelayMsg("等待游戏加载", 40000);
 
@@ -357,35 +361,35 @@ namespace War3_72bian
                 Delay(2000);
 
                 // 选择难度
-                MoveToClick(游戏_选择难度坐标);
+                MoveToClick(gameSelectModePosition);
 
                 Delay(1000);
 
                 // 选择角色
-                MoveToClick(游戏_仙子坐标, isDoubleClick: true);
+                MoveToClick(gameHeroPosition, isDoubleClick: true);
 
                 Delay(5000);
 
                 // 移动到商店附近
-                MoveToClick(游戏_商店坐标, isRight: true);
+                MoveToClick(gameShopPosition, isRight: true);
 
                 // 调用自动初始化
                 auto_init_button_Click(sender, e);
 
                 // 点击宠物头像
-                MoveToClick(游戏_宠物头像坐标);
+                MoveToClick(gameBabyHeadImagePosition);
 
                 // 让宠物走到NPC附近,激活任务
-                MoveToClick(游戏_NPC坐标, isRight: true);
+                MoveToClick(gameNpcPosition, isRight: true);
 
                 // 点击商店
-                MoveToClick(游戏_商店坐标);
+                MoveToClick(gameShopPosition);
 
                 // 点击力量果实,触发属性变更,血量重新计算
-                MoveToClick(游戏_力量果实坐标);
+                MoveToClick(gameLiLiangFruitPosition);
 
                 // 点击头像
-                MoveToClick(游戏_人物头像坐标);
+                MoveToClick(gameHeroHeadImagePosition);
 
                 int initStep = 0;
 
@@ -428,7 +432,7 @@ namespace War3_72bian
                 DelayMsg("扫荡结束,等待退出", 14000);
 
                 // 点击 返回平台
-                MoveToClick(游戏_返回平台按钮坐标);
+                MoveToClick(gameExitBtnPosition);
 
                 count++;
             }
@@ -449,6 +453,27 @@ namespace War3_72bian
                          this.BeginInvoke(() => throw e);
                      }
                  });
+        }
+
+        /// <summary>
+        /// "显示更多"按钮事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void show_more_button_Click(object sender, EventArgs e)
+        {
+            if (more_groupBox.Visible)
+            {
+                // 收起
+                this.Size = new Size(274, 107);
+            }
+            else
+            {
+                //展开
+                this.Size = new Size(446, 663);
+            }
+
+            more_groupBox.Visible = !more_groupBox.Visible;
         }
     }
 }
